@@ -1,3 +1,5 @@
+const { getMinutesAgo } = require('./lib/helpers');
+
 const express = require('express'),
     app = express();
 
@@ -9,35 +11,29 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.get('/updateUsers', (req, res) => {
-    const randomlyUpdateLastActivityOfUsers = require('./workers/index');
+    const updateLastActivity = require('./lib/updateLastActivity');
 
     let allUpdatedUsers = [];
     let allUsersEmails;
-    let i = 1;
+    let i = 0;
 
-    randomlyUpdateLastActivityOfUsers(usersEmail => {
+    updateLastActivity(usersEmail => {
         allUsersEmails = usersEmail;
     }, (singleUpdatedUser) => {
+        i++;
         allUpdatedUsers.push(singleUpdatedUser);
         // We send the response when all updated users data has been collected
         if (allUsersEmails.length === i) {
             // Getting only email and lastActivity
             const allUsers = allUpdatedUsers.map((user) => {
-                const lastActivity = [
-                    user.meta.lastActivity.getHours(),
-                    user.meta.lastActivity.getMinutes(),
-                    user.meta.lastActivity.getSeconds()
-                ].join(':');
                 return {
                     email: user.email,
-                    lastActivity: lastActivity
+                    lastActivity: getMinutesAgo(user.meta.lastActivity)
                 }
             });
-            res.send({
-                users: JSON.stringify(allUsers)
-            });
+            res.header('Content-Type', 'application/json');
+            res.send(JSON.stringify(allUsers, null, 4));
         }
-        i++;
     });
 });
 

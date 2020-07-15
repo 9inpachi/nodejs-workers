@@ -1,7 +1,6 @@
-const { getMinutesAgo } = require('./lib/helpers');
-
 const express = require('express'),
-    app = express();
+    app = express(),
+    { getMinutesAgo } = require('./lib/helpers');
 
 // Including database configuration
 require('./db/db');
@@ -17,7 +16,7 @@ app.get('/updateUsers', (req, res) => {
     let allUsersEmails;
     let i = 0;
 
-    updateLastActivity(usersEmail => {
+    updateLastActivity(10, usersEmail => {
         allUsersEmails = usersEmail;
     }, (singleUpdatedUser) => {
         i++;
@@ -32,10 +31,14 @@ app.get('/updateUsers', (req, res) => {
                 }
             });
             res.header('Content-Type', 'application/json');
-            res.send(JSON.stringify(allUsers, null, 4));
+            res.send(JSON.stringify(allUsers, null, 2));
         }
     });
 });
+
+// Worker
+const usersClassifierWorker = require('./workers');
+usersClassifierWorker();
 
 app.listen(app.get('port'), () => {
     console.log('App started at http://localhost:' + app.get('port'));

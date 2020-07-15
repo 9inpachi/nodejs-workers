@@ -55,14 +55,19 @@ const usersClassifierWorker = () => {
         });
     }
 
-    classifyUsers();
-    setInterval(() => {
-        classifyUsers();
-    }, 60000);
+    // USING setInterval
+
+    // classifyUsers();
+    // setInterval(() => {
+    //     classifyUsers();
+    // }, 60000);
+
+    // USING cron
 
     // Run a cron job for classifying users every second
-    // new CronJob('*/1 * * * *', () => {
-    // }, null, true, null, null, true).start();
+    new CronJob('*/1 * * * *', () => {
+        classifyUsers();
+    }, null, true, null, null, true).start();
 }
 
 module.exports = usersClassifierWorker;

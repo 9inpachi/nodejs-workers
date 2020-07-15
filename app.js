@@ -8,7 +8,7 @@ require('./db/db');
 app.set('port', 5000);
 app.use(express.urlencoded({ extended: false }));
 
-// UNCOMMENT THIS TO UPDATE LAST ACTIVITY OF USERS AND GET THEM BY ROUTE AS RESPONSE
+// UNCOMMENT THIS TO UPDATE LAST ACTIVITY OF USERS AND GET THE RESPONSE BY ROUTE
 
 // Route to randomly update the last activity of users and see which users were updated
 // app.get('/updateUsers', (req, res) => {
@@ -41,8 +41,12 @@ app.use(express.urlencoded({ extended: false }));
 // Set random last activity of random users
 const updateLastActivity = require('./lib/updateLastActivity');
 const usersCount = 10;
-updateLastActivity(usersCount, (allUsersUpdatedDoc) => {
+updateLastActivity(usersCount, (allUsersUpdatedDocs) => {
     console.log('Last activity of ' + usersCount + ' users updated\n');
+
+    // Running the worker after all users are updated so that data can be synced by the minute
+    // Possible to run it after asynchronously running last activity update which would be sufficient for actual environment
+    // but it makes debugging hard
 
     // Worker - runs every minute to get the users based on last activity
     const usersClassifierWorker = require('./workers');

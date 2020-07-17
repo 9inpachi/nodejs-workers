@@ -6,9 +6,15 @@ const userSchema = mongoose.Schema({
     meta: Object
 });
 
+const jobsSchema = mongoose.Schema({
+    classifyUsersTimeDecrement: Number
+});
+
 // User model
 const userModel = mongoose.model('User', userSchema, 'users');
+const jobsModel = mongoose.model('Jobs', jobsSchema, 'jobs');
 
 module.exports = {
-    userModel
+    userModel,
+    jobsModel
 };

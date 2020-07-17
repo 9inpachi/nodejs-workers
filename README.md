@@ -2,6 +2,8 @@
 
 Use `mongorestore -d <db_name> -c users backup/users.bson` to import the users data into your MongoDB instance.
 
+Create an emptry collection named `jobs` in the database.
+
 Make sure to change the db name at [db/db.js:4](https://github.com/9inpachi/nodejs-workers/blob/master/db/db.js#L4) (currently `phlow`) to the db name you imported the collection in.
 
 Both tasks will automatically run when you execute `npm start` or `node app.js`.
